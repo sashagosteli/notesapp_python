@@ -1,5 +1,5 @@
 
-#V.1.1
+#V.1.2
 
 # Приложение должно запускаться без ошибок, 
 # должно уметь сохранять данные
@@ -11,7 +11,7 @@
 # выводить на экран весь список записок, --> all_notes
 # добавлять
 # записку, --> add_note
-# редактировать ее и удалять. --> TODO
+# редактировать ее --> edit_note      и   удалять. --> TODO
 
 
 from datetime import date, datetime
@@ -42,11 +42,11 @@ def create_file():
     if (os.path.exists(FILENAME) == False):
         with open(FILENAME, 'w+', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['date','title', 'text'])
+            writer.writerow(['date', 'title', 'text'])
     else:
         return
         
-        # writer = csv.writer(csvfile, delimiter=';')
+      
         
         
        
@@ -54,40 +54,26 @@ def create_file():
 #  
     
 def add_note():
-   
-    # date = date.today()
     now = datetime.now()
     time = now.strftime("%m/%d/%Y, %H:%M:%S ")
-    # date = now.strftime("%m/%d/%Y")
+   
     title = input('Введите заголовок заметки: ')
     text = input('Введите текст заметки: ')
-    # notes = read_notes()
-    # new_note = [title,";", text,";"]
-    # new_date = [time]
+  
     df = pd.DataFrame ({
-
         'date':[time],
         'title': [title],
         'text': [text]
-        
     })
     df = df.set_index('date') 
-    df.to_csv(FILENAME, mode='a', header=False)
+    df.to_csv(FILENAME, mode='a', index = True, header=False)
     
-    # print(df)
-    # notes.append(new_date, new_note)
-    # write_notes(notes)
     
 
 
 
 def all_notes():
     
-
-    # with open(FILENAME,'r') as file:
-    #     csvreader = csv.reader(file)
-    #     # for row in csvreader:
-    #         # print(row)
     df = pd.read_csv(FILENAME)
     df['date'] = pd.to_datetime(df.date)
     df.sort_values(by = 'date', ascending= True, inplace= True)
@@ -99,38 +85,47 @@ def find_note(index):
     if index < 0 or index > len(notes):
         print('Note is NOT FOUND')
     else:
-        print(notes[index+1])
+        print(notes[index])
    
+# Проблема с индексацией, создает новый столбец с индексом   
     
+def edit_notes():
+    now = datetime.now()
+    new_time = now.strftime("%m/%d/%Y, %H:%M:%S ")
+    index = int(input('Enter the index of the note: '))
+    df = pd.read_csv(FILENAME)
     
+    df.loc[index, 'date'] = new_time
+    new_title = input('Enter new title: ')
+    df.loc[index, 'title'] = new_title
     
-# def show_notes():
-#     notes = read_notes()
-#     for i, (date, time, title, text) in enumerate(notes, start=1):
-#         print(f'{i}.{date};{time}|{title}')
+    new_text = input('Enter new text: ')
+    df.loc[index, 'text'] = new_text
+    
+    df.to_csv(FILENAME, mode='w', header=True,)
  
- 
- 
- 
+
+# def delete_note():
+    
     
 while True:
     create_file()
-    command = input('Введите команду add_note , all_notes , find_note ->>> ')
+    
+    command = input('Enter the command add_note , all_notes , find_note, edit_note ->>> ')
     if command == 'add_note':
         add_note()
     elif command == 'all_notes':
         all_notes()
     elif command == 'find_note':
-        index = int(input('Введите индекс записи: '))
+        index = int(input('Enter the number of the note: '))
         find_note(index)
-    elif command == 'read_file':  
-        read_notes()
-        break
+    elif command == 'edit_note':  
+        edit_notes()   
+    # elif command == 'delete_note':  
+    #     delete_note()  
     else:
         print('Command not found ')
         
-# def getcommands()
 
-# notes_name = input("Введите заголовок вашей заметки: ")
 
 
