@@ -11,7 +11,7 @@
 # выводить на экран весь список записок, --> all_notes
 # добавлять
 # записку, --> add_note
-# редактировать ее --> edit_note      и   удалять. --> TODO
+# редактировать ее --> edit_note      и   удалять. --> delete_note
 from datetime import date, datetime
 import csv
 import os
